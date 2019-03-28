@@ -1,3 +1,4 @@
+-*- Mode: org; mode: auto-fill; fill-column: 76; org-download-image-dir: "./img/";buffer-auto-save-file-name: nil;epa-file-encrypt-to: nil -*-
 
 * Big Data Analytics Using Spark
 
@@ -6,7 +7,10 @@
   *Yoav Freund*
   Professor of Computer Science and Engineering
   UC San Diego
+  
 ** About
+
+   https://courses.edx.org/courses/course-v1:UCSanDiegoX+DSE230x+1T2019/course/
 
    In data science, data is called “big” (called big and not Big data) if it
    cannot fit into the memory of a single standard laptop or workstation.
@@ -29,9 +33,124 @@
 
 
 ** What you'll learn 
-
+   
    
    * Programming Spark using Pyspark
    * Identifying the computational tradeoffs in a Spark application
    * Performing data loading and cleaning using Spark and Parquet
    * Modeling data through statistical and machine learning methods
+
+
+** Week 1 n 2
+
+   Latency
+
+   #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-27 17:41:49
+   [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-27_17-41-49.png]]
+
+
+   1. The major latency in big data analysis is reading and writing to storage
+   2. Different types of storage offer different latency
+   3. Big data solutions revolve around methods to for organizing storage and
+      computations in ways that maximize speed while minimizing cost
+   4. Key point is,memory locality
+      
+   memory trade off
+
+   #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:09:49
+   [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-09-49.png]]
+
+   
+   When a CPU needs to a computation with a value (Ex: 67). It first check if it is
+   in the cache. If it is the value can be retrieve quickly if not will take
+   longer
+   
+   1. cache hit: value is memory
+   2. cache missing
+      1. free space in the cache for instance element 67
+      2. write value in cache
+      3. Read value in cache
+
+
+
+   Access locality
+   
+   * The cache is effective if cache hit rate is high
+   * temporally locality: program access the same memory address many time in a
+     short period of time
+   * spacial locality: access multiple memory address close to each other, like
+     consecutive address (Ex: 50,51,52,53)
+     * sorted data increase spacial locality
+     * linked list (poor locality)
+     * indexed array (good locality)
+
+
+   #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:31:59
+   [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-31-59.png]]
+
+
+
+
+#+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:32:33
+[[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-32-33.png]]
+
+   Remember memory RAM are split in pages, and data in the same page is easy to
+   be copy and transferred to the cache
+
+   Summary
+
+   * Caching reduces storage latency by bringing relevant data close to the CPU
+   * This requires that CODE exhibits access locality. You need:
+     * Temporal locality (How to guarantee that in code?)
+     * Spatial locality (How to guarantee that in code?)
+
+
+   Row-wise (numpy, matlab n R) vs Column-wise (IDL needs to double check)
+   * Row-wise: scanning row by row is faster than column by column (due spatial
+    locality)
+
+    Code to test it's But I am not 100% convinced about that. For better
+     measurment need to repeat n times
+    #+begin_src python
+      # This is very complicated. Because for me the matrix should be square
+
+      n = 10
+      a = np.array([range(1,n*n+1)]).reshape(n,n)
+      a
+
+      # XXX: If random did not work 
+      # a = np.random.rand(n,n)
+      # a
+
+      %%timeit
+
+      #Scan column by column
+
+      s = 0
+      for i in range(n): s+=sum(a[:,i])
+
+      print(s)
+      # 31.5 s ± 93.5 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+      %%time 
+      #Scan row by row
+      s= 0
+      for i in range(n): s+=sum(a[i,:])
+
+      print(s)
+      # 31.2 s ± 149 ms per loop (mean ± std. dev. of 7 runs, 1 loop each) !?
+    #+end_src
+
+   Conclusions:
+
+   1. Traversing a numpy array column by column takes more than row by row
+   2. The effect increase with the size of the array
+   3. The effect is highly variable between runs due to state of the cache n
+      process running on CPU
+
+
+
+   
+
+
+
