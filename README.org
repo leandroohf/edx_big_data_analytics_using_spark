@@ -42,115 +42,213 @@
 
 
 ** Week 1 n 2
+***    Latency
 
-   Latency
-
-   #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-27 17:41:49
-   [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-27_17-41-49.png]]
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-27 17:41:49
+    [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-27_17-41-49.png]]
 
 
-   1. The major latency in big data analysis is reading and writing to storage
-   2. Different types of storage offer different latency
-   3. Big data solutions revolve around methods to for organizing storage and
-      computations in ways that maximize speed while minimizing cost
-   4. Key point is,memory locality
+    1. The major latency in big data analysis is reading and writing to storage
+    2. Different types of storage offer different latency
+    3. Big data solutions revolve around methods to for organizing storage and
+       computations in ways that maximize speed while minimizing cost
+    4. Key point is,memory locality
       
-   memory trade off
+    memory trade off
 
-   #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:09:49
-   [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-09-49.png]]
-
-   
-   When a CPU needs to a computation with a value (Ex: 67). It first check if it is
-   in the cache. If it is the value can be retrieve quickly if not will take
-   longer
-   
-   1. cache hit: value is memory
-   2. cache missing
-      1. free space in the cache for instance element 67
-      2. write value in cache
-      3. Read value in cache
-
-
-
-   Access locality
-   
-   * The cache is effective if cache hit rate is high
-   * temporally locality: program access the same memory address many time in a
-     short period of time
-   * spacial locality: access multiple memory address close to each other, like
-     consecutive address (Ex: 50,51,52,53)
-     * sorted data increase spacial locality
-     * linked list (poor locality)
-     * indexed array (good locality)
-
-
-   #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:31:59
-   [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-31-59.png]]
-
-
-
-
-#+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:32:33
-[[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-32-33.png]]
-
-   Remember memory RAM are split in pages, and data in the same page is easy to
-   be copy and transferred to the cache
-
-   Summary
-
-   * Caching reduces storage latency by bringing relevant data close to the CPU
-   * This requires that CODE exhibits access locality. You need:
-     * Temporal locality (How to guarantee that in code?)
-     * Spatial locality (How to guarantee that in code?)
-
-
-   Row-wise (numpy, matlab n R) vs Column-wise (IDL needs to double check)
-   * Row-wise: scanning row by row is faster than column by column (due spatial
-    locality)
-
-    Code to test it's But I am not 100% convinced about that. For better
-     measurment need to repeat n times
-    #+begin_src python
-      # This is very complicated. Because for me the matrix should be square
-
-      n = 10
-      a = np.array([range(1,n*n+1)]).reshape(n,n)
-      a
-
-      # XXX: If random did not work 
-      # a = np.random.rand(n,n)
-      # a
-
-      %%timeit
-
-      #Scan column by column
-
-      s = 0
-      for i in range(n): s+=sum(a[:,i])
-
-      print(s)
-      # 31.5 s ± 93.5 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
-
-      %%time 
-      #Scan row by row
-      s= 0
-      for i in range(n): s+=sum(a[i,:])
-
-      print(s)
-      # 31.2 s ± 149 ms per loop (mean ± std. dev. of 7 runs, 1 loop each) !?
-    #+end_src
-
-   Conclusions:
-
-   1. Traversing a numpy array column by column takes more than row by row
-   2. The effect increase with the size of the array
-   3. The effect is highly variable between runs due to state of the cache n
-      process running on CPU
-
-
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:09:49
+    [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-09-49.png]]
 
    
+    When a CPU needs to a computation with a value (Ex: 67). It first check if it is
+    in the cache. If it is the value can be retrieve quickly if not will take
+    longer
+   
+    1. cache hit: value is memory
+    2. cache missing
+       1. free space in the cache for instance element 67
+       2. write value in cache
+       3. Read value in cache
 
 
 
+    Access locality
+   
+    * The cache is effective if cache hit rate is high
+    * temporally locality: program access the same memory address many time in a
+      short period of time
+    * spacial locality: access multiple memory address close to each other, like
+      consecutive address (Ex: 50,51,52,53)
+      * sorted data increase spacial locality
+      * linked list (poor locality)
+      * indexed array (good locality)
+
+
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:31:59
+    [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-31-59.png]]
+
+
+
+
+ #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:32:33
+ [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-32-33.png]]
+
+    Remember memory RAM are split in pages, and data in the same page is easy to
+    be copy and transferred to the cache
+
+    Summary
+
+    * Caching reduces storage latency by bringing relevant data close to the CPU
+    * This requires that CODE exhibits access locality. You need:
+      * Temporal locality (How to guarantee that in code?)
+      * Spatial locality (How to guarantee that in code?)
+
+
+    Row-wise (numpy, matlab n R) vs Column-wise (IDL needs to double check)
+    * Row-wise: scanning row by row is faster than column by column (due spatial
+     locality)
+
+     Code to test it's But I am not 100% convinced about that. For better
+      measurment need to repeat n times
+     #+begin_src python
+       # This is very complicated. Because for me the matrix should be square
+
+       n = 10
+       a = np.array([range(1,n*n+1)]).reshape(n,n)
+       a
+
+       # XXX: If random did not work 
+       # a = np.random.rand(n,n)
+       # a
+
+       %%timeit
+
+       #Scan column by column
+
+       s = 0
+       for i in range(n): s+=sum(a[:,i])
+
+       print(s)
+       # 31.5 s ± 93.5 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+
+       %%time 
+       #Scan row by row
+       s= 0
+       for i in range(n): s+=sum(a[i,:])
+
+       print(s)
+       # 31.2 s ± 149 ms per loop (mean ± std. dev. of 7 runs, 1 loop each) !?
+     #+end_src
+
+    Conclusions:
+
+    1. Traversing a numpy array column by column takes more than row by row
+    2. The effect increase with the size of the array
+    3. The effect is highly variable between runs due to state of the cache n
+       process running on CPU
+*** Measuring Latency
+
+    This is the most important things that affects performance in system with
+    large data.
+
+    * L1 Cache latency is very slow
+    * external memory like RAM or SSD are very slow
+
+    How to measure
+
+    The software that he uses is accurate to only to 1 ms (10^{-6}) and not to
+    nano seconds.
+    
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 09:17:42
+    [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_09-17-42.png]]
+
+     Some notes about how to visualize and analyze long tails distributions:
+     * They have a high number of cases in large ranges that happens few times.
+       So if you count all together is a significant number of cases, but each
+       case happens few times. See the histograms visualization. Due to scale
+       you will not be able to see the events in long tail range. So the
+       histograms was split into 2 ranges. Another problem with histogram not
+       related to long tails is to choose the bin size.
+
+     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 09:29:41
+     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_09-29-41.png]]
+       
+     * One solution,that is less intuitive is to see the probabilities of the
+       event happens. Special cumulative density function CDF. But as you get
+       used to it will get right intuitive
+       * We do not have to deal with bin size
+       * CDF(a) = Pr(T <= a) where T is latency
+       * Instead of CDF we will plot the 1 - CDF(a) the probability of T be
+         large than a and compare with Gaussian that is something that we are
+         familiar with.
+       * You still have the scale problem in large range. It is better in the
+         low range like in histogram but you do not have the choose bin size.
+         Close to zero (left side of the vertical bar - mean value !?. The small horizontal bar is the std) you see more details,
+         because there is no bin to select.
+
+     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 09:44:12
+     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_09-44-12.png]]
+    
+     * Plot 1 - CDF(1) + loglog scales
+       * long tails distributions the probability to get extremely values are
+         much large than the ones we have in normal distributions. Now we can
+         see the differences in the interested range of latency - between micro
+         seconds (10^{-15}) and milliseconds (10^{-3}).
+
+     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 09:50:12
+     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_09-50-12.png]]
+     
+     The results of experiment
+     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 09:55:49
+     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_09-55-49.png]]
+     
+     
+       
+     * sequential access because is much faster than random access
+       and is highly affect by the size of block
+     * write 10GB on disk sequentially takes about 8.9s, or less than 1 second
+       per GB
+     * write 1TB on disk at this rate would take ~1000 seconds or about 16
+       minutes
+       
+       
+     **Important results. SSD can be faster than memory RAM in sequential
+       access**. 
+
+     * The reason is because we are measuring *bandwidth* rather than latency.
+     * We say it take 8.9 sec to write 10GB to SSD , we are NOT saying that
+       write one byte it takes 8.9 x 10^{-10} second to write a single byte
+     * This is because many write operations are occurring in parallel. Analogy
+       is the bus. If you measure the time a people takes to go to A to B is
+       long, but if you account all people inside the bus than this will be
+       quite fast
+
+     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 10:01:10
+     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_10-01-10.png]]
+     
+     Comparison memory vs SSD
+     
+     | item | sequential access | random access  10KB | random access 10GB |
+     | RAM  | 100MB/s           | 10^-9               | 10^-6 - 10^-3      |
+     | SSD  | 1GB/s             | 10^-5 - 10^-3       | 10^-4 - 10^-1      |
+     |------+-------------------+---------------------+--------------------|
+
+
+     Summary of Macbook Pro hardware parameters
+
+     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 10:14:35
+     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_10-14-35.png]]
+     
+     * *The size of L3 cache is very important*
+     * Latency has long have tails (And its is appears in many studies)
+     * memory latency: 10^-9 - 10^-6
+     * SSD 10^-5 - 10^-1
+
+
+     Take away messages
+
+     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-29 10:17:42
+     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-29_10-17-42.png]]
+     
+     **The important thing is avoid mover data around and around because of
+       latency**. And its is hard to get used to it, because wwe are more custom to think in terms of CPU rate
