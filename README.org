@@ -31,7 +31,6 @@
    gain hands-on experience using PySpark within the Jupyter notebooks
    environment.
 
-
 ** What you'll learn 
    
    
@@ -40,9 +39,8 @@
    * Performing data loading and cleaning using Spark and Parquet
    * Modeling data through statistical and machine learning methods
 
-
 ** Week 1 n 2
-***    Latency
+***  Latency
 
     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-27 17:41:49
     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-27_17-41-49.png]]
@@ -252,3 +250,51 @@
      
      **The important thing is avoid mover data around and around because of
        latency**. And its is hard to get used to it, because wwe are more custom to think in terms of CPU rate
+*** Memory hierarchy
+
+    * Hierarchy
+      * small and fast storage close to CPU
+      * large n slow further CPU
+    * Caching
+      * transfer data between levels of the hierarchy
+    * Programmer point of view does NOT need to know that. hardware provide
+      abstraction. memory looks like a single large array
+    * BUT Performance depends on program's **access pattern**
+
+    Example of memory hierarchy    (4 levels of storage)
+    1. CPU
+       * Register in the CPU
+       * access time: ns
+       * Block size: 32 Bytes
+       * Size: 32 - 256KB
+    2. L2 Cache
+       * access time: between ns - ms
+       * Block Size: 64B
+       * Size: 1 - 12 MB
+    3. Memory
+       * access time: ns - ms
+       * Block Size: 8KB
+       * Size: 1 - 32 GB
+    4. Disks
+       * access time: ms
+       * Block Size: 
+       * Size: 100 GB - 1 PB
+
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-02 10:29:31
+    [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-02_10-29-31.png]]
+
+
+    Cluster computers extend the hierarchy (analogy with one computer)
+    * Cluster a group of computers 
+    * Storage is shared
+    * Locality: Data reside on the computer will use it
+    * "Caching" is replaced by the world "Shuffling"
+    * Abstractions  is spark RDD
+
+   Sizes, latency and clusters
+      * Size are spread 12 orders of magnitude
+      * Latency: 6 orders of magnitude
+      * Block size: 5 orders (less important)
+
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-02 10:52:50
+    [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-02_10-52-50.png]]
