@@ -320,9 +320,9 @@
 
     Locality
 
-    * We want to process chunk in pararlleles as much as you can
+    * We want to process chunk in parallels as much as you can
     * Ex:
-      * We do not want to process File 1 Chunk 1 and Fil1 1 Chunk 2 in the same
+      * We do not want to process File 1 Chunk 1 and File 1 Chunk 2 in the same
         node because Chunk 2 will be only process after Chunk 1
       * I better solution is process File1 Chunk 2 in another note See the
         figure bellow
@@ -338,12 +338,10 @@
     * Allows developers to specify parallel computation without knowing how the
       hardware is organized
 
-
     Spark
 
     * Developed by Matei Zaharia, amplab 2014
     * Hadoop uses shared file systems (disk)
     * Spark uses shared memory- faster n lower latency
-
 
 *** Map Reduce and Spark
