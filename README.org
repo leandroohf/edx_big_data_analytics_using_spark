@@ -298,3 +298,52 @@
 
     #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-02 10:52:50
     [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-02_10-52-50.png]]
+
+
+*** History of Big computation
+
+    1. Commodity hardware: storage is cheap
+    2. Locality: Data close to CPU
+    3. Redundancy: Can recovery from server failures
+    4. Simple abstraction: the developer point of views looks like a normal file
+       system (chunk n redundancy mechanism are hidden)
+
+
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-03 10:19:47
+    [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-03_10-19-47.png]]
+
+
+    Redundancy recovery
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-03 10:26:25
+    [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-03_10-26-25.png]]
+    
+
+    Locality
+
+    * We want to process chunk in pararlleles as much as you can
+    * Ex:
+      * We do not want to process File 1 Chunk 1 and Fil1 1 Chunk 2 in the same
+        node because Chunk 2 will be only process after Chunk 1
+      * I better solution is process File1 Chunk 2 in another note See the
+        figure bellow
+        
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-03 10:29:59
+    [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-03_10-29-59.png]]
+    
+
+    Map-Reduce 
+
+    * HDFS is a storage abstraction
+    * Map-reduce is a computation abstraction that works well with HDFS
+    * Allows developers to specify parallel computation without knowing how the
+      hardware is organized
+
+
+    Spark
+
+    * Developed by Matei Zaharia, amplab 2014
+    * Hadoop uses shared file systems (disk)
+    * Spark uses shared memory- faster n lower latency
+
+
+*** Map Reduce and Spark
