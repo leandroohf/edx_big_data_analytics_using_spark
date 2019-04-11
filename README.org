@@ -31,7 +31,7 @@
    gain hands-on experience using PySpark within the Jupyter notebooks
    environment.
 
-** What you'll learn 
+** What you'll learn
    
    
    * Programming Spark using Pyspark
@@ -39,8 +39,23 @@
    * Performing data loading and cleaning using Spark and Parquet
    * Modeling data through statistical and machine learning methods
 
+
+** Main learning's
+
+   1. latency (IO operations) is the main bottleneck in big data
+   2. Caching can minimize latency
+   3. Map reduce operations can NOT be depended of the order of the data and
+      the operations, because when running in parallel it is not possible
+      the guarantee the order
+   4. Hadoop properties 
+      1. Redundancy: Data copied across the clusters node and data can be
+         recovery if a node fails
+      2. Locality: node process data that it is in his disk
+      3. Data: Process in parallel
+
+
 ** Week 1 n 2
-***  Latency
+*** Latency
 
     #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-27 17:41:49
     [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-27_17-41-49.png]]
@@ -87,9 +102,8 @@
 
 
 
-
- #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:32:33
- [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-32-33.png]]
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-03-28 10:32:33
+    [[file:Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-03-28_10-32-33.png]]
 
     Remember memory RAM are split in pages, and data in the same page is easy to
     be copy and transferred to the cache
@@ -299,7 +313,6 @@
     #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-02 10:52:50
     [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-02_10-52-50.png]]
 
-
 *** History of Big computation
 
     1. Commodity hardware: storage is cheap
@@ -345,3 +358,41 @@
     * Spark uses shared memory- faster n lower latency
 
 *** Map Reduce and Spark
+    
+    Comparing with traditional way in python 
+    
+    * Operation over all elements of a list
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-11 10:20:24
+    [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-11_10-20-24.png]]
+
+
+    * Summarizing or aggregations in a list (reduce)
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-11 10:24:24
+    [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-11_10-24-24.png]]
+
+    
+    * Map n reduce
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-11 10:25:34
+    [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-11_10-25-34.png]]
+
+    Map reduce operations can not dependent on:
+    * Order of the items in the list (commutativity)
+    * Order of operators (Associativity)
+
+
+    If you do in the wrong way (depends of the order of items or operations)
+    , we will get a different results every time we run it because the
+    cluster can execute the operations in different orders and ways
+
+    Comparing executions 
+    #+DOWNLOADED: /tmp/screenshot.png @ 2019-04-11 10:30:17
+    [[file:img/Big%20Data%20Analytics%20Using%20Spark/screenshot_2019-04-11_10-30-17.png]]
+
+
+    Why order independence is important?
+
+    * Computation order can be chosen by compiler/optimizer
+    * Allows for parallel computation of sums of subsets
+      * parallels computation is hard to coding
+    * Map reduce programmer exposes to the compilers opportunities for
+      parallel computations
