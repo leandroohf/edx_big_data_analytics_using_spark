@@ -513,4 +513,61 @@
 
 
 
+*** Spark Notebooks
+
+
+    * RDD is the basic data structure. You can think as a list spread in
+      many computers
+    * collects is the opposites of parallelize. After a collect you bring to
+      memory and you loose parallelism. collects return a list
+    * Map
+      * applies an operations to each element of an RDD
+      * returns a RDD
+      * operates in parallel
+      * each executor operates on the data local to it
+
+        #+begin_src python
+          A.map(lambda x: x*x).collect()
+        #+end_src
+
+
+
+    * Reduce
+      * input is RDD and return a single value
+      * each executor reduce the data local to it
+      * the results from all executors are then combined
+
+
+       #+begin_src python
+         words = ['this', 'is', 'the', 'best', 'mac', 'ever']
+
+         wordRDD = sc.parallelize(words)
+
+         wordRDD.reduce(lambda w,v: w if len(w) < len(v) else v)
+
+         # another example is sum (the prder does not matter)
+         B=sc.parallelize([1,3,5,2])
+
+         B.reduce(lambda x,y: x+y)
+       #+end_src
+
+       If you do operation that depends of the order you can still do it but
+       you will get different results
+
+
+       #+begin_src python
+         B=sc.parallelize([1,3,5,2])
+
+         B.reduce(lambda x,y: x-y)
+       #+end_src
+
+       
+       x - y is different of y - x
+
+       * if the order is: ((1-3) - 5) - 2 = -9
+       * if the oreder is: (1-3) - (5 - 2) = -5 
+
+
+
+    
     
